@@ -1,0 +1,95 @@
+{
+  "name": "NEON FOOD OS - Sistema Operacional Gastronômico",
+  "short_name": "Neon Food OS",
+  "description": "Sistema Operacional Food Tech SaaS Brasileiro para Restaurantes, Bares, Hamburguerias e Franquias.",
+  "start_url": "/",
+  "id": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "window-controls-overlay", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#0B0B0E",
+  "theme_color": "#0B0B0E",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "categories": [
+    "food",
+    "business",
+    "productivity",
+    "utilities"
+  ],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "PDV Inteligente",
+      "short_name": "PDV",
+      "description": "Abrir Frente de Caixa e Balcão",
+      "url": "/#pdv",
+      "icons": [
+        {
+          "src": "/icon.svg",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Central de Pedidos (KDS)",
+      "short_name": "KDS",
+      "description": "Gestão de Comandas e Cozinha",
+      "url": "/#pedidos",
+      "icons": [
+        {
+          "src": "/icon.svg",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "App Garçom & Mesas",
+      "short_name": "Garçom",
+      "description": "Comanda Mobile e Lançamento de Mesas",
+      "url": "/#mobile-garcom",
+      "icons": [
+        {
+          "src": "/icon.svg",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Cardápio & Matriz BCG",
+      "short_name": "Cardápio",
+      "description": "Engenharia de Cardápio e CMV",
+      "url": "/#cardapio",
+      "icons": [
+        {
+          "src": "/icon.svg",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ]
+}

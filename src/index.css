@@ -1,0 +1,320 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-display: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    /* McDonald's + Futuristic Neon Gastronomy Palette */
+    --mcd-red: #DA291C;
+    --mcd-red-glow: #FF2A38;
+    --mcd-yellow: #FFC72C;
+    --mcd-yellow-glow: #FFD600;
+    --mcd-orange: #FF6B00;
+    --neon-blue: #00D2FF;
+    --neon-green: #00E676;
+    --neon-purple: #8B5CF6;
+    --neon-pink: #FF007F;
+    
+    --dark-bg: #09090D;
+    --dark-surface: #111118;
+    --dark-card: #151520;
+    --dark-border: #222234;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: #09090D;
+    color: #F4F4F5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.01em;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+/* ==========================================================================
+   MCDONALD'S FUTURISTIC FAST-FOOD CUSTOM SCROLLBAR
+   Deep dark track with golden arches neon accent and ruby red glow on hover
+   ========================================================================== */
+
+/* WebKit (Chrome, Safari, Edge, Opera) */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0D0D14;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 199, 44, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #FFC72C 0%, #DA291C 100%);
+  border-radius: 9999px;
+  border: 1.5px solid #0D0D14;
+  box-shadow: 0 0 10px rgba(255, 199, 44, 0.3);
+  transition: all 0.2s ease-in-out;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #FFD600 0%, #FF2A38 100%);
+  box-shadow: 0 0 14px rgba(218, 41, 28, 0.7), 0 0 6px rgba(255, 199, 44, 0.6);
+}
+
+::-webkit-scrollbar-corner {
+  background: #09090D;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #FFC72C #0D0D14;
+}
+
+/* ==========================================================================
+   NEON GLOWS & ACCENTS
+   ========================================================================== */
+.neon-glow-red {
+  box-shadow: 0 0 20px -3px rgba(218, 41, 28, 0.55), inset 0 0 8px rgba(218, 41, 28, 0.15);
+}
+
+.neon-glow-yellow {
+  box-shadow: 0 0 20px -3px rgba(255, 199, 44, 0.5), inset 0 0 8px rgba(255, 199, 44, 0.15);
+}
+
+.neon-glow-orange {
+  box-shadow: 0 0 20px -3px rgba(255, 107, 0, 0.5), inset 0 0 8px rgba(255, 107, 0, 0.15);
+}
+
+.neon-glow-blue {
+  box-shadow: 0 0 20px -3px rgba(0, 210, 255, 0.5), inset 0 0 8px rgba(0, 210, 255, 0.15);
+}
+
+.neon-glow-green {
+  box-shadow: 0 0 20px -3px rgba(0, 230, 118, 0.5), inset 0 0 8px rgba(0, 230, 118, 0.15);
+}
+
+/* ==========================================================================
+   MESAS & COMANDAS GRID - HOVER & SELECTION NEON FEEDBACK
+   Feedback visual com escala 1.02 e sombra neon suave ao passar o mouse ou selecionar
+   ========================================================================== */
+.mesas-comandas-grid > * {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+  will-change: transform, box-shadow;
+}
+
+.mesas-comandas-grid > *:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 0 24px rgba(0, 210, 106, 0.35);
+}
+
+.mesas-comandas-grid > *.mesa-card-item:hover {
+  transform: scale(1.02);
+}
+
+.mesas-comandas-grid > *.status-free:hover {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 0 24px rgba(0, 210, 106, 0.4);
+}
+
+.mesas-comandas-grid > *.status-occupied:hover {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 0 24px rgba(255, 43, 78, 0.4);
+}
+
+.mesas-comandas-grid > *.status-bill_requested:hover {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 0 28px rgba(255, 199, 44, 0.5);
+}
+
+.mesas-comandas-grid > *.status-reserved:hover {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 0 24px rgba(168, 85, 247, 0.4);
+}
+
+.mesas-comandas-grid > *.status-cleaning:hover {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 0 26px rgba(245, 158, 11, 0.45);
+}
+
+/* Selecionar uma mesa */
+.mesas-comandas-grid > *.is-selected,
+.mesas-comandas-grid > *[data-selected="true"],
+.mesas-comandas-grid > *[aria-selected="true"] {
+  transform: scale(1.02);
+  box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.7), 0 0 28px rgba(0, 210, 106, 0.45);
+  z-index: 20;
+}
+
+.mesas-comandas-grid > *.is-selected.status-free,
+.mesas-comandas-grid > *[data-selected="true"].status-free {
+  box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 210, 106, 0.5);
+}
+
+.mesas-comandas-grid > *.is-selected.status-occupied,
+.mesas-comandas-grid > *[data-selected="true"].status-occupied {
+  box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.7), 0 0 30px rgba(255, 43, 78, 0.5);
+}
+
+.mesas-comandas-grid > *.is-selected.status-bill_requested,
+.mesas-comandas-grid > *[data-selected="true"].status-bill_requested {
+  box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.7), 0 0 32px rgba(255, 199, 44, 0.6);
+}
+
+.mesas-comandas-grid > *.is-selected.status-reserved,
+.mesas-comandas-grid > *[data-selected="true"].status-reserved {
+  box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.7), 0 0 30px rgba(168, 85, 247, 0.5);
+}
+
+.mesas-comandas-grid > *.is-selected.status-cleaning,
+.mesas-comandas-grid > *[data-selected="true"].status-cleaning {
+  box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.7), 0 0 30px rgba(245, 158, 11, 0.55);
+}
+
+/* Glass & Clean Fast-Food Panel Utility */
+.glass-panel {
+  background: rgba(18, 18, 26, 0.92);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 199, 44, 0.18);
+}
+
+.mcd-card {
+  background: #12121A;
+  border: 1px solid #222234;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mcd-card:hover {
+  border-color: rgba(255, 199, 44, 0.45);
+  background: #161624;
+  box-shadow: 0 6px 24px -5px rgba(0, 0, 0, 0.6), 0 0 16px rgba(255, 199, 44, 0.15);
+}
+
+/* Clean Custom Input Styles */
+input, select, textarea {
+  outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #DA291C !important;
+  box-shadow: 0 0 0 1px #DA291C, 0 0 14px rgba(218, 41, 28, 0.4);
+}
+
+/* High Speed Fast-Food Pulses */
+@keyframes fastPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.85; }
+}
+
+.animate-fast-pulse {
+  animation: fastPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Skeleton Screens Shimmer Animation */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-shimmer::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.07) 20%,
+    rgba(255, 255, 255, 0.16) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer 1.6s infinite;
+  content: '';
+}
+
+.skeleton-shimmer-light::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0) 0,
+    rgba(0, 0, 0, 0.04) 20%,
+    rgba(0, 0, 0, 0.09) 50%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  animation: shimmer 1.6s infinite;
+  content: '';
+}
+
+/* ==========================================================================
+   PRINT MEDIA STYLES FOR CATALOG & FLYER PDF
+   ========================================================================== */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  #catalogo-pdf-print-area,
+  #catalogo-pdf-print-area *,
+  #flyer-pdf-print-area,
+  #flyer-pdf-print-area * {
+    visibility: visible;
+  }
+
+  #catalogo-pdf-print-area,
+  #flyer-pdf-print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 12px !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: #0D0B0F !important;
+    color: #FFFFFF !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  #catalogo-pdf-print-area .break-inside-avoid,
+  #flyer-pdf-print-area .break-inside-avoid {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  #catalogo-pdf-print-area img,
+  #flyer-pdf-print-area img {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    max-width: 100% !important;
+  }
+}

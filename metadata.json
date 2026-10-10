@@ -1,0 +1,6 @@
+{
+  "name": "Lanchonete Dulci",
+  "description": "Cardápio Digital Oficial da Lanchonete Dulci em Manaus - AM. Lanches no pão brioche, Pastéis fritos na hora por R$ 6,00, Pizzas artesanais, Batata frita, Guaraná Baré e pedidos online com delivery e WhatsApp.",
+  "requestFramePermissions": ["camera", "microphone", "geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

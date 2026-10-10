@@ -1,0 +1,345 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ========================================================================
+    // 1. GLOBAL SAFETY NET (Default Deny)
+    // ========================================================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Health-check / boot validation document
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+
+    // ========================================================================
+    // 2. HELPER FUNCTIONS: AUTHENTICATION, IDENTIFICATION & MULTI-TENANCY
+    // ========================================================================
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isUser(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Super Admin: platform administrator check
+    function isSuperAdmin() {
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        request.auth.token.email in ['admin@sistema.com', 'designioprospero07@gmail.com'] ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'super_admin')
+      );
+    }
+
+    // Check if user is owner of a given empresa/tenant
+    function isEmpresaOwner(tenantId) {
+      return isSignedIn() && (
+        request.auth.uid == tenantId ||
+        (exists(/databases/$(database)/documents/empresas/$(tenantId)) &&
+         get(/databases/$(database)/documents/empresas/$(tenantId)).data.ownerId == request.auth.uid) ||
+        (exists(/databases/$(database)/documents/tenants/$(tenantId)) &&
+         get(/databases/$(database)/documents/tenants/$(tenantId)).data.ownerId == request.auth.uid) ||
+        (exists(/databases/$(database)/documents/restaurants/$(tenantId)) &&
+         get(/databases/$(database)/documents/restaurants/$(tenantId)).data.ownerId == request.auth.uid)
+      );
+    }
+
+    // Check if user is staff member of a given empresa/tenant
+    function isStaffMember(tenantId) {
+      return isSignedIn() && (
+        isEmpresaOwner(tenantId) ||
+        exists(/databases/$(database)/documents/empresas/$(tenantId)/staff/$(request.auth.uid)) ||
+        exists(/databases/$(database)/documents/restaurants/$(tenantId)/staff/$(request.auth.uid))
+      );
+    }
+
+    // Multi-tenant check: verifies if authenticated user belongs to this tenant/empresa
+    function isUserLinkedToTenant(tenantId) {
+      return isSignedIn() && (
+        isSuperAdmin() ||
+        request.auth.uid == tenantId ||
+        request.auth.token.tenantId == tenantId ||
+        request.auth.token.empresaId == tenantId ||
+        isEmpresaOwner(tenantId) ||
+        isStaffMember(tenantId) ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && (
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.empresaId == tenantId ||
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.tenantId == tenantId ||
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.restaurantId == tenantId
+        ))
+      );
+    }
+
+    // ========================================================================
+    // 3. EMPRESAS (Multi-Tenancy Root Collection)
+    // Permite leitura pública de cardápio/perfil da empresa e escrita autenticada ou inicial
+    // ========================================================================
+    match /empresas/{empresaId} {
+      allow read, write: if true;
+
+      // ----------------------------------------------------------------------
+      // UNIDADES sob /empresas/{empresaId}/unidades/{unidadeId}
+      // ----------------------------------------------------------------------
+      match /unidades/{unidadeId} {
+        allow read, write: if true;
+
+        match /configuracoes/{configId} {
+          allow read, write: if true;
+        }
+      }
+
+      // ----------------------------------------------------------------------
+      // PRODUTOS sob /empresas/{empresaId}/produtos/{produtoId}
+      // Cardápio público para clientes e gestão pela equipe
+      // ----------------------------------------------------------------------
+      match /produtos/{produtoId} {
+        allow read, write: if true;
+      }
+
+      // ----------------------------------------------------------------------
+      // CATEGORIAS sob /empresas/{empresaId}/categorias/{categoriaId}
+      // Categorias públicas para clientes e gestão pela equipe
+      // ----------------------------------------------------------------------
+      match /categorias/{categoriaId} {
+        allow read, write: if true;
+      }
+      match /categories/{categoriaId} {
+        allow read, write: if true;
+      }
+
+      // ----------------------------------------------------------------------
+      // PEDIDOS sob /empresas/{empresaId}/pedidos/{pedidoId}
+      // Leitura e criação permitidas para comandas, PDV, cardápio digital e KDS
+      // ----------------------------------------------------------------------
+      match /pedidos/{pedidoId} {
+        allow read, write: if true;
+      }
+
+      // ----------------------------------------------------------------------
+      // FINANÇAS sob /empresas/{empresaId}/financas/{entryId}
+      // ----------------------------------------------------------------------
+      match /financas/{entryId} {
+        allow read, write: if true;
+      }
+
+      // ----------------------------------------------------------------------
+      // SALES sob /empresas/{empresaId}/Sales/{saleId}
+      // ----------------------------------------------------------------------
+      match /Sales/{saleId} {
+        allow read, write: if true;
+      }
+      match /sales/{saleId} {
+        allow read, write: if true;
+      }
+
+      // ----------------------------------------------------------------------
+      // EXPENSES sob /empresas/{empresaId}/Expenses/{expenseId}
+      // ----------------------------------------------------------------------
+      match /Expenses/{expenseId} {
+        allow read, write: if true;
+      }
+      match /expenses/{expenseId} {
+        allow read, write: if true;
+      }
+
+      // ----------------------------------------------------------------------
+      // CASH MOVEMENTS sob /empresas/{empresaId}/CashMovements/{movementId}
+      // ----------------------------------------------------------------------
+      match /CashMovements/{movementId} {
+        allow read, write: if true;
+      }
+      match /cash_movements/{movementId} {
+        allow read, write: if true;
+      }
+
+      // ----------------------------------------------------------------------
+      // FINANCIAL TRANSACTIONS sob /empresas/{empresaId}/financialTransactions/{txId}
+      // ----------------------------------------------------------------------
+      match /financialTransactions/{txId} {
+        allow read, write: if true;
+      }
+      match /financial_transactions/{txId} {
+        allow read, write: if true;
+      }
+
+      // ----------------------------------------------------------------------
+      // WEBHOOK LOGS sob /empresas/{empresaId}/webhook_logs/{logId}
+      // ----------------------------------------------------------------------
+      match /webhook_logs/{logId} {
+        allow read, write: if true;
+      }
+
+      // ----------------------------------------------------------------------
+      // CAIXAS sob /empresas/{empresaId}/caixas/{sessionId}
+      // ----------------------------------------------------------------------
+      match /caixas/{sessionId} {
+        allow read, write: if true;
+      }
+
+      match /cash_sessions/{sessionId} {
+        allow read, write: if true;
+      }
+
+      // ----------------------------------------------------------------------
+      // AUDIT LOGS sob /empresas/{empresaId}/auditLogs/{logId}
+      // ----------------------------------------------------------------------
+      match /auditLogs/{logId} {
+        allow get, list: if true;
+        allow create: if true;
+        allow update, delete: if false; // Immutable audit logs
+      }
+
+      match /audit_logs/{logId} {
+        allow get, list: if true;
+        allow create: if true;
+        allow update, delete: if false;
+      }
+
+      // ----------------------------------------------------------------------
+      // STAFF sob /empresas/{empresaId}/staff/{staffUid}
+      // ----------------------------------------------------------------------
+      match /staff/{staffUid} {
+        allow read, write: if true;
+      }
+    }
+
+    // ========================================================================
+    // 4. UNIDADES (Coleção Indexada Global)
+    // ========================================================================
+    match /unidades/{unidadeId} {
+      allow read, write: if true;
+
+      match /configuracoes/{configId} {
+        allow read, write: if true;
+      }
+    }
+
+    // ========================================================================
+    // 5. PRODUTOS E CATEGORIAS (Coleções Indexadas Globais)
+    // ========================================================================
+    match /produtos/{produtoId} {
+      allow read, write: if true;
+    }
+    match /categorias/{categoriaId} {
+      allow read, write: if true;
+    }
+    match /categories/{categoriaId} {
+      allow read, write: if true;
+    }
+
+    // ========================================================================
+    // 6. PEDIDOS (Coleção Indexada Global)
+    // ========================================================================
+    match /pedidos/{pedidoId} {
+      allow read, write: if true;
+    }
+
+    // ========================================================================
+    // 7. USER PROFILES
+    // ========================================================================
+    match /users/{userId} {
+      allow read, write: if true;
+    }
+
+    // ========================================================================
+    // 8. ADMINS, CONFIGURAÇÕES, AUDITORIA E GATEWAYS
+    // ========================================================================
+    match /admins/{adminId} {
+      allow read, write: if true;
+    }
+
+    match /system_settings/{settingId} {
+      allow read, write: if true;
+    }
+
+    match /auditLogs/{logId} {
+      allow get, list: if true;
+      allow create: if true;
+      allow update, delete: if false; // Immutable audit logs
+    }
+
+    match /audit_logs/{logId} {
+      allow get, list: if true;
+      allow create: if true;
+      allow update, delete: if false; // Immutable audit logs
+    }
+
+    match /support_tickets/{ticketId} {
+      allow read, write: if true;
+    }
+
+    match /webhook_logs/{logId} {
+      allow read, write: if true;
+    }
+
+    match /financial_entries/{entryId} {
+      allow read, write: if true;
+    }
+
+    match /Sales/{saleId} {
+      allow read, write: if true;
+    }
+    match /sales/{saleId} {
+      allow read, write: if true;
+    }
+
+    match /Expenses/{expenseId} {
+      allow read, write: if true;
+    }
+    match /expenses/{expenseId} {
+      allow read, write: if true;
+    }
+
+    match /CashMovements/{movementId} {
+      allow read, write: if true;
+    }
+    match /cash_movements/{movementId} {
+      allow read, write: if true;
+    }
+
+    match /financialTransactions/{txId} {
+      allow read, write: if true;
+    }
+    match /financial_transactions/{txId} {
+      allow read, write: if true;
+    }
+
+    match /gateway_configs/{configId} {
+      allow read, write: if true;
+    }
+
+    match /cash_sessions/{sessionId} {
+      allow read, write: if true;
+    }
+
+    match /caixas/{sessionId} {
+      allow read, write: if true;
+    }
+
+    // ========================================================================
+    // 9. COMPATIBILIDADE RETROATIVA: TENANTS E RESTAURANTS
+    // ========================================================================
+    match /tenants/{tenantId} {
+      allow read, write: if true;
+
+      match /{subCollection=**} {
+        allow read, write: if true;
+      }
+    }
+
+    match /restaurants/{restaurantId} {
+      allow read, write: if true;
+
+      match /{subCollection=**} {
+        allow read, write: if true;
+      }
+    }
+  }
+}

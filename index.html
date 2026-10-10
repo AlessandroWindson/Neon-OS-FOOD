@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Lanchonete Dulci</title>
+    <meta name="description" content="Cardápio Digital Oficial da Lanchonete Dulci em Manaus - AM. Lanches no pão brioche, Pastéis fritos na hora por R$ 6,00, Pizzas artesanais, Batata frita, Guaraná Baré e pedidos online com delivery e WhatsApp." />
+
+    <!-- PWA Manifest & Icons -->
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/icon.svg" />
+
+    <!-- Theme & Color Config -->
+    <meta name="theme-color" content="#09090B" />
+    <meta name="background-color" content="#09090B" />
+
+    <!-- Google Fonts: Plus Jakarta Sans, Outfit, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Apple Web App Capabilities -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Lanchonete Dulci" />
+
+    <!-- Open Graph & Social Cards -->
+    <meta property="og:title" content="Lanchonete Dulci" />
+    <meta property="og:description" content="Cardápio Digital Oficial da Lanchonete Dulci em Manaus - AM. Lanches no pão brioche, Pastéis fritos na hora por R$ 6,00, Pizzas artesanais, Batata frita, Guaraná Baré e pedidos online com delivery e WhatsApp." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/icon.svg" />
+    <meta name="twitter:card" content="summary" />
+  </head>
+  <body class="bg-[#0B0B0E] text-white selection:bg-[#E31837] selection:text-white">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Service Worker Registration for PWA
+      if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch((err) => {
+            console.log('SW registration note:', err);
+          });
+        });
+      }
+    </script>
+  </body>
+</html>
+

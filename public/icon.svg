@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#181824"/>
+      <stop offset="50%" stop-color="#0E0E14"/>
+      <stop offset="100%" stop-color="#07070A"/>
+    </linearGradient>
+    <linearGradient id="neon-red" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF4365"/>
+      <stop offset="100%" stop-color="#E31837"/>
+    </linearGradient>
+    <linearGradient id="neon-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF066"/>
+      <stop offset="100%" stop-color="#FFE600"/>
+    </linearGradient>
+    <linearGradient id="border-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF4365" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#FFE600" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#77D4E1" stop-opacity="0.2"/>
+    </linearGradient>
+    <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background Squircle -->
+  <rect x="16" y="16" width="480" height="480" rx="112" fill="url(#bg-grad)" stroke="url(#border-grad)" stroke-width="8"/>
+  
+  <!-- Subtle Ambient Glow -->
+  <circle cx="256" cy="256" r="140" fill="#E31837" opacity="0.18" filter="url(#neon-glow)" />
+
+  <!-- Logo Graphics: Stylized Neon Burger / Flame / Tech Symbol -->
+  <g transform="translate(106, 116)" filter="url(#neon-glow)">
+    <!-- Top Bun / Dome -->
+    <path d="M 30 110 C 30 40, 270 40, 270 110 Z" fill="url(#neon-gold)"/>
+    
+    <!-- Sesame/Tech Data Dots -->
+    <circle cx="100" cy="75" r="5" fill="#FFFFFF" opacity="0.9"/>
+    <circle cx="150" cy="65" r="5" fill="#FFFFFF" opacity="0.9"/>
+    <circle cx="200" cy="75" r="5" fill="#FFFFFF" opacity="0.9"/>
+    
+    <!-- Neon Patty / Lightning Slice -->
+    <rect x="20" y="125" width="260" height="28" rx="14" fill="url(#neon-red)"/>
+    
+    <!-- Neon Cheese / Signal Wave -->
+    <path d="M 40 160 L 150 190 L 260 160 L 240 178 L 150 212 L 60 178 Z" fill="url(#neon-gold)"/>
+    
+    <!-- Bottom Bun -->
+    <rect x="30" y="215" width="240" height="34" rx="17" fill="url(#neon-red)"/>
+
+    <!-- Lightning Bolt / Energy Accent -->
+    <path d="M 160 85 L 135 145 L 160 145 L 140 195 L 185 135 L 158 135 Z" fill="#FFFFFF" opacity="0.95"/>
+  </g>
+
+  <!-- "NEON FOOD" Text Badge in SVG -->
+  <text x="256" y="440" text-anchor="middle" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="34" letter-spacing="4">NEON FOOD OS</text>
+</svg>

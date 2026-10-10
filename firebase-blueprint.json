@@ -1,0 +1,601 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Perfil e credenciais de acesso do usuário autenticado no Firebase Auth",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 100 },
+        "displayName": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 150 },
+        "phone": { "type": "string", "maxLength": 30 },
+        "companyName": { "type": "string", "maxLength": 120 },
+        "role": { 
+          "type": "string", 
+          "enum": ["super_admin", "owner", "admin", "manager", "cashier", "waiter", "kitchen", "driver"],
+          "maxLength": 30 
+        },
+        "empresaId": { "type": "string", "maxLength": 128 },
+        "unidadeId": { "type": "string", "maxLength": 128 },
+        "restaurantId": { "type": "string", "maxLength": 128 },
+        "tenantId": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "email", "role"]
+    },
+    "Empresa": {
+      "title": "Empresa",
+      "description": "Registro mestre da empresa para isolamento multi-tenant (Multi-Tenancy Root)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 120 },
+        "slug": { "type": "string", "maxLength": 80 },
+        "cnpj": { "type": "string", "maxLength": 30 },
+        "ownerId": { "type": "string", "maxLength": 128 },
+        "ownerName": { "type": "string", "maxLength": 100 },
+        "ownerEmail": { "type": "string", "maxLength": 150 },
+        "phone": { "type": "string", "maxLength": 30 },
+        "planId": { "type": "string", "maxLength": 50 },
+        "planName": { "type": "string", "maxLength": 80 },
+        "monthlyFee": { "type": "number" },
+        "status": { 
+          "type": "string", 
+          "enum": ["active", "trial", "suspended", "deactivated", "canceled"],
+          "maxLength": 30 
+        },
+        "branchesCount": { "type": "number" },
+        "trialEndsAt": { "type": "string", "maxLength": 50 },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "name", "ownerId", "cnpj", "status"]
+    },
+    "Unidade": {
+      "title": "Unidade",
+      "description": "Filial ou unidade operacional vinculada a uma Empresa (Multi-Unidade)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "empresaId": { "type": "string", "maxLength": 128 },
+        "tenantId": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 120 },
+        "code": { "type": "string", "maxLength": 30 },
+        "city": { "type": "string", "maxLength": 80 },
+        "state": { "type": "string", "maxLength": 10 },
+        "address": { "type": "string", "maxLength": 200 },
+        "phone": { "type": "string", "maxLength": 30 },
+        "whatsapp": { "type": "string", "maxLength": 30 },
+        "email": { "type": "string", "maxLength": 150 },
+        "isMain": { "type": "boolean" },
+        "status": { 
+          "type": "string", 
+          "enum": ["open", "closed", "Ativa", "Inativa", "Suspensa", "Em configuração"],
+          "maxLength": 30 
+        },
+        "tradeName": { "type": "string", "maxLength": 120 },
+        "corporateName": { "type": "string", "maxLength": 150 },
+        "cnpj": { "type": "string", "maxLength": 30 },
+        "kdsAvgTimeMin": { "type": "number" },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "empresaId", "name", "status"]
+    },
+    "Produto": {
+      "title": "Produto",
+      "description": "Item do cardápio com vínculo multi-tenant à Empresa e Unidade específica ou global",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "empresaId": { "type": "string", "maxLength": 128 },
+        "unidadeId": { "type": "string", "maxLength": 128 },
+        "tenantId": { "type": "string", "maxLength": 128 },
+        "branchId": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 120 },
+        "description": { "type": "string", "maxLength": 500 },
+        "category": { "type": "string", "maxLength": 60 },
+        "price": { "type": "number" },
+        "costPrice": { "type": "number" },
+        "marginPercent": { "type": "number" },
+        "cmvPercent": { "type": "number" },
+        "available": { "type": "boolean" },
+        "imageUrl": { "type": "string", "maxLength": 300 },
+        "station": { 
+          "type": "string", 
+          "enum": ["grill", "fryer", "assembly", "bar", "dessert", "all"],
+          "maxLength": 30 
+        },
+        "bcgClassification": { 
+          "type": "string", 
+          "enum": ["star", "cash_cow", "question_mark", "puzzle", "dog", "horse"],
+          "maxLength": 30 
+        },
+        "stock": { "type": "number" },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "empresaId", "name", "price", "category"]
+    },
+    "Categoria": {
+      "title": "Categoria",
+      "description": "Categoria do cardápio com isolamento multi-tenant vinculada à Empresa (Multi-Tenant Categories)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "empresaId": { "type": "string", "maxLength": 128 },
+        "tenantId": { "type": "string", "maxLength": 128 },
+        "branchId": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 80 },
+        "icon": { "type": "string", "maxLength": 60 },
+        "order": { "type": "number" },
+        "imageUrl": { "type": "string", "maxLength": 300 },
+        "description": { "type": "string", "maxLength": 250 },
+        "colorGradient": { "type": "string", "maxLength": 80 },
+        "badge": { "type": "string", "maxLength": 40 },
+        "startingPrice": { "type": "number" },
+        "popularTag": { "type": "string", "maxLength": 60 },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "empresaId", "name", "order"]
+    },
+    "Pedido": {
+      "title": "Pedido",
+      "description": "Comanda ou pedido emitido no PDV, Mesas, Delivery ou Cardápio Digital (Multi-Tenant)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "empresaId": { "type": "string", "maxLength": 128 },
+        "unidadeId": { "type": "string", "maxLength": 128 },
+        "tenantId": { "type": "string", "maxLength": 128 },
+        "branchId": { "type": "string", "maxLength": 128 },
+        "orderNumber": { "type": "number" },
+        "displayCode": { "type": "string", "maxLength": 30 },
+        "channel": { 
+          "type": "string", 
+          "enum": ["pdv_balcao", "mesa", "comanda", "delivery_whatsapp", "delivery_web", "cardapio_online", "atendente_mesa", "ifood", "rappi", "99food"],
+          "maxLength": 40 
+        },
+        "status": { 
+          "type": "string", 
+          "enum": ["pending", "recebido", "preparing", "ready", "delivering", "completed", "canceled"],
+          "maxLength": 30 
+        },
+        "customerName": { "type": "string", "maxLength": 100 },
+        "customerPhone": { "type": "string", "maxLength": 30 },
+        "tableNumber": { "type": "number" },
+        "comandaNumber": { "type": "number" },
+        "subtotal": { "type": "number" },
+        "discount": { "type": "number" },
+        "deliveryFee": { "type": "number" },
+        "serviceFee": { "type": "number" },
+        "total": { "type": "number" },
+        "paymentMethod": { 
+          "type": "string", 
+          "enum": ["pix", "credit_card", "debit_card", "cash", "voucher", "wallet"],
+          "maxLength": 40 
+        },
+        "paymentStatus": { 
+          "type": "string", 
+          "enum": ["pending", "paid", "refunded"],
+          "maxLength": 20 
+        },
+        "paidAmount": { "type": "number" },
+        "pixTxId": { "type": "string", "maxLength": 100 },
+        "pixEndToEndId": { "type": "string", "maxLength": 100 },
+        "pixPaidAt": { "type": "string", "maxLength": 50 },
+        "cardBrand": { "type": "string", "maxLength": 40 },
+        "cardLast4": { "type": "string", "maxLength": 10 },
+        "cardAuthCode": { "type": "string", "maxLength": 50 },
+        "cardTid": { "type": "string", "maxLength": 50 },
+        "cardNsu": { "type": "string", "maxLength": 50 },
+        "gatewayProvider": { "type": "string", "maxLength": 80 },
+        "gatewayPaidAt": { "type": "string", "maxLength": 50 },
+        "preparationNotes": { "type": "string", "maxLength": 300 },
+        "kdsUpdatedAt": { "type": "string", "maxLength": 50 },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "empresaId", "total", "status", "paymentMethod", "paymentStatus"]
+    },
+    "WebhookLog": {
+      "title": "WebhookLog",
+      "description": "Log de auditoria e sincronização de eventos de webhooks de gateways de terceiros (Pix e Cartão)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "empresaId": { "type": "string", "maxLength": 128 },
+        "provider": { "type": "string", "maxLength": 60 },
+        "event": { "type": "string", "maxLength": 60 },
+        "orderCode": { "type": "string", "maxLength": 50 },
+        "orderId": { "type": "string", "maxLength": 128 },
+        "amount": { "type": "number" },
+        "paymentMethod": { "type": "string", "maxLength": 40 },
+        "paymentStatus": { "type": "string", "maxLength": 40 },
+        "syncStatus": { "type": "string", "maxLength": 30 },
+        "pixEndToEndId": { "type": "string", "maxLength": 100 },
+        "cardNsu": { "type": "string", "maxLength": 50 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "empresaId", "provider", "event", "syncStatus"]
+    },
+    "RestaurantStaff": {
+      "title": "RestaurantStaff",
+      "description": "Vínculo de funcionário autenticado ao restaurante com papel (Admin, Gerente, Atendente, Cozinha)",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 150 },
+        "role": { 
+          "type": "string", 
+          "enum": ["admin", "owner", "manager", "gerente", "cashier", "waiter", "attendant", "atendente", "kitchen", "cozinha"],
+          "maxLength": 30 
+        },
+        "department": { "type": "string", "maxLength": 50 },
+        "shift": { "type": "string", "maxLength": 50 },
+        "active": { "type": "string", "maxLength": 10 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["userId", "role"]
+    },
+    "InventoryItem": {
+      "title": "InventoryItem",
+      "description": "Item de estoque e insumo com controle multi-tenant",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "empresaId": { "type": "string", "maxLength": 128 },
+        "unidadeId": { "type": "string", "maxLength": 128 },
+        "restaurantId": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 100 },
+        "currentStock": { "type": "number" },
+        "minStock": { "type": "number" },
+        "unit": { "type": "string", "maxLength": 20 },
+        "unitCost": { "type": "number" },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "name", "currentStock"]
+    },
+    "FinancialEntry": {
+      "title": "FinancialEntry",
+      "description": "Lançamentos financeiros e fluxo de caixa com controle multi-tenant",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "empresaId": { "type": "string", "maxLength": 128 },
+        "unidadeId": { "type": "string", "maxLength": 128 },
+        "restaurantId": { "type": "string", "maxLength": 128 },
+        "description": { "type": "string", "maxLength": 150 },
+        "amount": { "type": "number" },
+        "type": { "type": "string", "maxLength": 20 },
+        "category": { "type": "string", "maxLength": 50 },
+        "date": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "amount", "type"]
+    },
+    "UnitGatewayConfig": {
+      "title": "UnitGatewayConfig",
+      "description": "Configuração de chaves de API e credenciais de pagamento (Pix e Cartão) vinculadas à Unidade",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "empresaId": { "type": "string", "maxLength": 128 },
+        "unidadeId": { "type": "string", "maxLength": 128 },
+        "unidadeName": { "type": "string", "maxLength": 120 },
+        "environment": { 
+          "type": "string", 
+          "enum": ["sandbox", "production"], 
+          "maxLength": 20 
+        },
+        "activePixProvider": { "type": "string", "maxLength": 50 },
+        "activeCardProvider": { "type": "string", "maxLength": 50 },
+        "pixKey": { "type": "string", "maxLength": 150 },
+        "pixKeyType": { "type": "string", "maxLength": 30 },
+        "mercadoPagoPublicKey": { "type": "string", "maxLength": 200 },
+        "mercadoPagoAccessToken": { "type": "string", "maxLength": 250 },
+        "mercadoPagoWebhookSecret": { "type": "string", "maxLength": 200 },
+        "stoneApiKey": { "type": "string", "maxLength": 200 },
+        "stoneSecretKey": { "type": "string", "maxLength": 250 },
+        "stoneCode": { "type": "string", "maxLength": 50 },
+        "stoneTerminalId": { "type": "string", "maxLength": 50 },
+        "cieloMerchantId": { "type": "string", "maxLength": 100 },
+        "cieloMerchantKey": { "type": "string", "maxLength": 200 },
+        "asaasApiKey": { "type": "string", "maxLength": 200 },
+        "updatedAt": { "type": "string", "maxLength": 50 },
+        "updatedBy": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["id", "empresaId", "unidadeId", "environment"]
+    },
+    "CashSession": {
+      "title": "CashSession",
+      "description": "Sessão e fechamento de caixa de frente de loja e PDV multi-tenant vinculada à Unidade",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "empresaId": { "type": "string", "maxLength": 128 },
+        "tenantId": { "type": "string", "maxLength": 128 },
+        "branchId": { "type": "string", "maxLength": 128 },
+        "openedBy": { "type": "string", "maxLength": 100 },
+        "openedAt": { "type": "string", "maxLength": 50 },
+        "closedBy": { "type": "string", "maxLength": 100 },
+        "closedAt": { "type": "string", "maxLength": 50 },
+        "status": { "type": "string", "enum": ["open", "closed"], "maxLength": 20 },
+        "initialAmount": { "type": "number" },
+        "cashSales": { "type": "number" },
+        "pixSales": { "type": "number" },
+        "creditSales": { "type": "number" },
+        "debitSales": { "type": "number" },
+        "voucherSales": { "type": "number" },
+        "totalInflow": { "type": "number" },
+        "bleedAmount": { "type": "number" },
+        "supplyAmount": { "type": "number" },
+        "calculatedFinalAmount": { "type": "number" },
+        "countedFinalAmount": { "type": "number" },
+        "difference": { "type": "number" },
+        "lastPaymentAmount": { "type": "number" },
+        "lastPaymentMethod": { "type": "string", "maxLength": 30 },
+        "lastPaymentOrderId": { "type": "string", "maxLength": 128 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "status", "initialAmount", "totalInflow"]
+    },
+    "Sale": {
+      "title": "Sale",
+      "description": "Venda realizada e liquidada derivada exclusivamente de pedidos finalizados e pagos",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "empresaId": { "type": "string", "maxLength": 128 },
+        "unidadeId": { "type": "string", "maxLength": 128 },
+        "orderId": { "type": "string", "maxLength": 128 },
+        "orderNumber": { "type": "number" },
+        "displayCode": { "type": "string", "maxLength": 30 },
+        "customerName": { "type": "string", "maxLength": 100 },
+        "channel": { "type": "string", "maxLength": 40 },
+        "paymentMethod": { "type": "string", "maxLength": 40 },
+        "paymentStatus": { "type": "string", "maxLength": 20 },
+        "subtotal": { "type": "number" },
+        "discount": { "type": "number" },
+        "deliveryFee": { "type": "number" },
+        "serviceFee": { "type": "number" },
+        "grossTotal": { "type": "number" },
+        "cardFee": { "type": "number" },
+        "netAmount": { "type": "number" },
+        "costOfGoods": { "type": "number" },
+        "saleDate": { "type": "string", "maxLength": 50 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "empresaId", "grossTotal", "paymentMethod", "saleDate"]
+    },
+    "Expense": {
+      "title": "Expense",
+      "description": "Despesas operacionais, compras de insumos e taxas financeiras reais",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "empresaId": { "type": "string", "maxLength": 128 },
+        "unidadeId": { "type": "string", "maxLength": 128 },
+        "category": { "type": "string", "maxLength": 50 },
+        "description": { "type": "string", "maxLength": 150 },
+        "amount": { "type": "number" },
+        "paymentMethod": { "type": "string", "maxLength": 40 },
+        "status": { "type": "string", "maxLength": 20 },
+        "expenseDate": { "type": "string", "maxLength": 50 },
+        "source": { "type": "string", "maxLength": 50 },
+        "referenceId": { "type": "string", "maxLength": 128 },
+        "recipient": { "type": "string", "maxLength": 100 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "empresaId", "amount", "category", "expenseDate"]
+    },
+    "CashMovement": {
+      "title": "CashMovement",
+      "description": "Movimentações rastreáveis de dinheiro e caixa: sangrias, suprimentos, entradas de vendas e saídas de compras",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "empresaId": { "type": "string", "maxLength": 128 },
+        "unidadeId": { "type": "string", "maxLength": 128 },
+        "sessionId": { "type": "string", "maxLength": 128 },
+        "type": { "type": "string", "maxLength": 40 },
+        "amount": { "type": "number" },
+        "paymentMethod": { "type": "string", "maxLength": 40 },
+        "reason": { "type": "string", "maxLength": 200 },
+        "operatorName": { "type": "string", "maxLength": 100 },
+        "referenceId": { "type": "string", "maxLength": 128 },
+        "timestamp": { "type": "string", "maxLength": 50 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "empresaId", "amount", "type", "timestamp"]
+    },
+    "FinancialTransaction": {
+      "title": "FinancialTransaction",
+      "description": "Transação financeira automática gerada com chave de idempotência a partir de pedido finalizado e pago",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "orderId": { "type": "string", "maxLength": 128 },
+        "idempotencyKey": { "type": "string", "maxLength": 128 },
+        "empresaId": { "type": "string", "maxLength": 128 },
+        "unidadeId": { "type": "string", "maxLength": 128 },
+        "type": { "type": "string", "enum": ["income", "expense"], "maxLength": 20 },
+        "category": { "type": "string", "maxLength": 50 },
+        "description": { "type": "string", "maxLength": 255 },
+        "amount": { "type": "number" },
+        "paymentMethod": { "type": "string", "maxLength": 40 },
+        "paymentStatus": { "type": "string", "maxLength": 20 },
+        "status": { "type": "string", "enum": ["completed", "confirmed", "refunded"], "maxLength": 20 },
+        "channel": { "type": "string", "maxLength": 40 },
+        "customerName": { "type": "string", "maxLength": 100 },
+        "orderNumber": { "type": "number" },
+        "displayCode": { "type": "string", "maxLength": 30 },
+        "costOfGoods": { "type": "number" },
+        "netAmount": { "type": "number" },
+        "cardFee": { "type": "number" },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "timestamp": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "orderId", "idempotencyKey", "amount", "type", "paymentStatus", "createdAt"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Registro global imutável de auditoria para ações críticas (login, criação de pedidos, alterações de preço e exclusões), vinculado ao tenantId e ao usuário correspondente",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "timestamp": { "type": "string", "maxLength": 50 },
+        "tenantId": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "userName": { "type": "string", "maxLength": 100 },
+        "userEmail": { "type": "string", "maxLength": 150 },
+        "userRole": { "type": "string", "maxLength": 50 },
+        "actionType": { "type": "string", "maxLength": 50 },
+        "action": { "type": "string", "maxLength": 50 },
+        "category": { "type": "string", "maxLength": 30 },
+        "description": { "type": "string", "maxLength": 500 },
+        "ipAddress": { "type": "string", "maxLength": 50 },
+        "severity": { "type": "string", "enum": ["info", "warning", "critical"], "maxLength": 20 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "timestamp", "tenantId", "action", "description"]
+    }
+  },
+  "firestore": {
+    "/empresas/{empresaId}": {
+      "schema": { "$ref": "#/entities/Empresa" },
+      "description": "Coleção raiz de Empresas multi-tenant (acesso por proprietário, equipe autorizada e Super Admin)"
+    },
+    "/empresas/{empresaId}/unidades/{unidadeId}": {
+      "schema": { "$ref": "#/entities/Unidade" },
+      "description": "Filiais / unidades vinculadas à empresa (gestão por Gerente/Admin da empresa)"
+    },
+    "/empresas/{empresaId}/unidades/{unidadeId}/configuracoes/{configId}": {
+      "schema": { "$ref": "#/entities/UnitGatewayConfig" },
+      "description": "Configurações de chaves de API e credenciais de pagamento vinculadas à unidade operacional"
+    },
+    "/empresas/{empresaId}/produtos/{produtoId}": {
+      "schema": { "$ref": "#/entities/Produto" },
+      "description": "Itens do cardápio da empresa (edição: Admin/Gerente; leitura: pública para cardápio digital e equipe)"
+    },
+    "/empresas/{empresaId}/categorias/{categoriaId}": {
+      "schema": { "$ref": "#/entities/Categoria" },
+      "description": "Categorias de produtos da empresa com isolamento multi-tenant (edição: Admin/Gerente; leitura: pública para cardápio digital e equipe)"
+    },
+    "/empresas/{empresaId}/pedidos/{pedidoId}": {
+      "schema": { "$ref": "#/entities/Pedido" },
+      "description": "Pedidos e comandas da empresa (criação: Atendente/PDV/Cliente; KDS: Cozinha; cancelamento: Gerente)"
+    },
+    "/empresas/{empresaId}/financas/{entryId}": {
+      "schema": { "$ref": "#/entities/FinancialEntry" },
+      "description": "Lançamentos e baixas financeiras automáticas da empresa"
+    },
+    "/empresas/{empresaId}/Sales/{saleId}": {
+      "schema": { "$ref": "#/entities/Sale" },
+      "description": "Vendas realizadas e confirmadas da empresa"
+    },
+    "/empresas/{empresaId}/Expenses/{expenseId}": {
+      "schema": { "$ref": "#/entities/Expense" },
+      "description": "Despesas operacionais e custos de insumos da empresa"
+    },
+    "/empresas/{empresaId}/CashMovements/{movementId}": {
+      "schema": { "$ref": "#/entities/CashMovement" },
+      "description": "Movimentações financeiras de caixa da empresa"
+    },
+    "/Sales/{saleId}": {
+      "schema": { "$ref": "#/entities/Sale" },
+      "description": "Coleção global de Vendas indexada para auditoria e conciliação"
+    },
+    "/Expenses/{expenseId}": {
+      "schema": { "$ref": "#/entities/Expense" },
+      "description": "Coleção global de Despesas indexada para apuração e DRE"
+    },
+    "/CashMovements/{movementId}": {
+      "schema": { "$ref": "#/entities/CashMovement" },
+      "description": "Coleção global de Movimentações de Caixa indexada"
+    },
+    "/financialTransactions/{transactionId}": {
+      "schema": { "$ref": "#/entities/FinancialTransaction" },
+      "description": "Coleção global de transações financeiras automáticas geradas por eventos de pedidos finalizados com idempotência"
+    },
+    "/empresas/{empresaId}/financialTransactions/{transactionId}": {
+      "schema": { "$ref": "#/entities/FinancialTransaction" },
+      "description": "Transações financeiras multi-tenant da empresa geradas por pedidos finalizados e pagos com idempotência"
+    },
+    "/empresas/{empresaId}/webhook_logs/{logId}": {
+      "schema": { "$ref": "#/entities/WebhookLog" },
+      "description": "Auditoria de webhooks de pagamento recebidos e processados pela empresa"
+    },
+    "/empresas/{empresaId}/caixas/{sessionId}": {
+      "schema": { "$ref": "#/entities/CashSession" },
+      "description": "Sessão e movimentações de caixa da empresa atualizadas automaticamente por webhooks de pagamento e vendas no PDV"
+    },
+    "/cash_sessions/{sessionId}": {
+      "schema": { "$ref": "#/entities/CashSession" },
+      "description": "Coleção global de sessões de caixa indexada para conferência financeira e auditoria de sangrias/fechamento"
+    },
+    "/unidades/{unidadeId}": {
+      "schema": { "$ref": "#/entities/Unidade" },
+      "description": "Coleção global de Unidades/Filiais indexada por empresaId para consultas diretas"
+    },
+    "/unidades/{unidadeId}/configuracoes/{configId}": {
+      "schema": { "$ref": "#/entities/UnitGatewayConfig" },
+      "description": "Configurações de chaves de API de gateways de pagamento vinculadas à Unidade"
+    },
+    "/produtos/{produtoId}": {
+      "schema": { "$ref": "#/entities/Produto" },
+      "description": "Coleção global de Produtos com isolamento multi-tenant por empresaId e unidadeId"
+    },
+    "/categorias/{categoriaId}": {
+      "schema": { "$ref": "#/entities/Categoria" },
+      "description": "Coleção global de Categorias indexada para isolamento multi-tenant por empresaId"
+    },
+    "/pedidos/{pedidoId}": {
+      "schema": { "$ref": "#/entities/Pedido" },
+      "description": "Coleção global de Pedidos com isolamento multi-tenant por empresaId e unidadeId"
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Perfis individuais de usuários mapeados pelo UID (leitura e atualização restrita ao próprio usuário)"
+    },
+    "/restaurants/{restaurantId}": {
+      "schema": { "$ref": "#/entities/Empresa" },
+      "description": "Compatibilidade retroativa de restaurantes mapeados pelo ID"
+    },
+    "/restaurants/{restaurantId}/staff/{userId}": {
+      "schema": { "$ref": "#/entities/RestaurantStaff" },
+      "description": "Equipe e funções por UID (leitura para Gerente/Admin e o próprio colaborador; gestão para Admin)"
+    },
+    "/restaurants/{restaurantId}/products/{productId}": {
+      "schema": { "$ref": "#/entities/Produto" },
+      "description": "Cardápio do restaurante (edição: Admin/Gerente; leitura: Atendente e Cozinha)"
+    },
+    "/restaurants/{restaurantId}/categories/{categoryId}": {
+      "schema": { "$ref": "#/entities/Categoria" },
+      "description": "Categorias do cardápio do restaurante (edição: Admin/Gerente; leitura: pública e equipe)"
+    },
+    "/restaurants/{restaurantId}/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/Pedido" },
+      "description": "Pedidos do restaurante (criação: Atendente; KDS: Cozinha; cancelamento: Admin/Gerente)"
+    },
+    "/restaurants/{restaurantId}/inventory/{ingredientId}": {
+      "schema": { "$ref": "#/entities/InventoryItem" },
+      "description": "Insumos e estoque (gestão: Admin/Gerente; baixa de insumos: Cozinha; bloqueado para Atendente)"
+    },
+    "/restaurants/{restaurantId}/finances/{entryId}": {
+      "schema": { "$ref": "#/entities/FinancialEntry" },
+      "description": "Financeiro e DRE (restrito exclusivamente a Admin e Gerente; bloqueado para Atendente e Cozinha)"
+    },
+    "/auditLogs/{logId}": {
+      "schema": { "$ref": "#/entities/AuditLog" },
+      "description": "Coleção global de logs de auditoria imutáveis para ações críticas vinculadas a tenantId e userId"
+    },
+    "/empresas/{empresaId}/auditLogs/{logId}": {
+      "schema": { "$ref": "#/entities/AuditLog" },
+      "description": "Logs de auditoria multi-tenant com escopo na empresa"
+    }
+  }
+}
